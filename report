@@ -1,0 +1,100 @@
+import React, { useState } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const data = [
+  { date: '29.01 - 04.02', moscowLeads: 131, spbLeads: 0, moscowCPL: 7034, spbCPL: 0 },
+  { date: '04.02 - 10.02', moscowLeads: 143, spbLeads: 0, moscowCPL: 6378, spbCPL: 0 },
+  { date: '11.02 - 17.02', moscowLeads: 131, spbLeads: 0, moscowCPL: 6752, spbCPL: 0 },
+  { date: '18.02 - 24.02', moscowLeads: 146, spbLeads: 0, moscowCPL: 6512, spbCPL: 0 },
+  { date: '25.02 - 03.03', moscowLeads: 144, spbLeads: 0, moscowCPL: 6574, spbCPL: 0 },
+  { date: '04.03 - 10.03', moscowLeads: 114, spbLeads: 10, moscowCPL: 7038, spbCPL: 19593 },
+  { date: '11.03 - 17.03', moscowLeads: 122, spbLeads: 24, moscowCPL: 7038, spbCPL: 12429 },
+  { date: '18.03 - 24.03', moscowLeads: 136, spbLeads: 15, moscowCPL: 6673, spbCPL: 22404 },
+  { date: '25.03 - 31.03', moscowLeads: 138, spbLeads: 8, moscowCPL: 5260, spbCPL: 34862 },
+  { date: '01.04 - 07.04', moscowLeads: 140, spbLeads: 16, moscowCPL: 5991, spbCPL: 20051 },
+  { date: '08.04 - 14.04', moscowLeads: 128, spbLeads: 18, moscowCPL: 5486, spbCPL: 21560 },
+  { date: '15.04 - 21.04', moscowLeads: 136, spbLeads: 15, moscowCPL: 6673, spbCPL: 22404 },
+  { date: '22.04 - 28.04', moscowLeads: 138, spbLeads: 8, moscowCPL: 5260, spbCPL: 34862 },
+  { date: '29.04 - 05.05', moscowLeads: 140, spbLeads: 11, moscowCPL: 5991, spbCPL: 32083 },
+  { date: '06.05 - 12.05', moscowLeads: 131, spbLeads: 10, moscowCPL: 6752, spbCPL: 19593 },
+  { date: '13.05 - 19.05', moscowLeads: 146, spbLeads: 24, moscowCPL: 6512, spbCPL: 12429 },
+  { date: '20.05 - 26.05', moscowLeads: 144, spbLeads: 15, moscowCPL: 6574, spbCPL: 22404 },
+  { date: '27.05 - 02.06', moscowLeads: 114, spbLeads: 10, moscowCPL: 7038, spbCPL: 19593 },
+  { date: '03.06 - 09.06', moscowLeads: 103, spbLeads: 13, moscowCPL: 9778, spbCPL: 21506 },
+  { date: '10.06 - 16.06', moscowLeads: 108, spbLeads: 17, moscowCPL: 8709, spbCPL: 15393 },
+  { date: '17.06 - 23.06', moscowLeads: 107, spbLeads: 12, moscowCPL: 8947, spbCPL: 15393 },
+  { date: '24.06 - 30.06', moscowLeads: 90, spbLeads: 12, moscowCPL: 9462, spbCPL: 22216 },
+];
+
+const totalMoscowLeads = data.reduce((sum, week) => sum + week.moscowLeads, 0);
+const totalSpbLeads = data.reduce((sum, week) => sum + week.spbLeads, 0);
+const totalLeads = totalMoscowLeads + totalSpbLeads;
+
+const MarketingDashboard = () => {
+  const [showMoscow, setShowMoscow] = useState(true);
+  const [showSpb, setShowSpb] = useState(true);
+
+  return (
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Маркетинговый отчет</h1>
+      
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold">Общая статистика:</h2>
+        <p>Всего лидов: {totalLeads}</p>
+        <p>Лиды в Москве: {totalMoscowLeads}</p>
+        <p>Лиды в Санкт-Петербурге: {totalSpbLeads}</p>
+      </div>
+
+      <div className="mb-4">
+        <label className="mr-4">
+          <input
+            type="checkbox"
+            checked={showMoscow}
+            onChange={() => setShowMoscow(!showMoscow)}
+          />
+          Показать Москву
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={showSpb}
+            onChange={() => setShowSpb(!showSpb)}
+          />
+          Показать Санкт-Петербург
+        </label>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Количество лидов по неделям</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" angle={-45} textAnchor="end" height={80} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            {showMoscow && <Line type="monotone" dataKey="moscowLeads" stroke="#8884d8" name="Москва" />}
+            {showSpb && <Line type="monotone" dataKey="spbLeads" stroke="#82ca9d" name="Санкт-Петербург" />}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Стоимость привлечения лида (CPL) по неделям</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" angle={-45} textAnchor="end" height={80} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            {showMoscow && <Line type="monotone" dataKey="moscowCPL" stroke="#8884d8" name="Москва" />}
+            {showSpb && <Line type="monotone" dataKey="spbCPL" stroke="#82ca9d" name="Санкт-Петербург" />}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
+export default MarketingDashboard;
